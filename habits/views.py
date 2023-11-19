@@ -1,17 +1,9 @@
-from decouple import config
-import telebot
-from django.shortcuts import HttpResponse
 from rest_framework import viewsets, generics
-from .models import Habit
-from users.models import CustomUser
-from .serializers import HabitSerializer
-import datetime
-import random
-import json
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from .permissions import IsOwner, IsManager
+from .models import Habit
 from .pagination import HabitPagination
+from .permissions import IsOwner, IsManager
+from .serializers import HabitSerializer
 from .services import create_periodic_task
 
 

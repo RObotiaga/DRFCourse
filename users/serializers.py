@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserSerializerForOthers(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('user_id', 'password',)
+        fields = ('password',)
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
