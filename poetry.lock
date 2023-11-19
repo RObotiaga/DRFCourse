@@ -868,6 +868,23 @@ files = [
 ]
 
 [[package]]
+name = "python-telegram-bot-calendar"
+version = "1.0.5"
+description = "Python inline calendar for telegram bots"
+optional = false
+python-versions = "*"
+files = [
+    {file = "python-telegram-bot-calendar-1.0.5.tar.gz", hash = "sha256:b1536021edc6d9ed8976ecb2f20869d9558ce946e10e01c8c8b66444757d70f7"},
+    {file = "python_telegram_bot_calendar-1.0.5-py3-none-any.whl", hash = "sha256:2d4ce5aefcb54629b9f3189d9f0ca2a0ff3cdf763d6a986f581ffbc2b967bd4d"},
+]
+
+[package.dependencies]
+python-dateutil = "*"
+
+[package.extras]
+telethon = ["telethon"]
+
+[[package]]
 name = "pytz"
 version = "2023.3.post1"
 description = "World timezone definitions, modern and historical"
@@ -1066,4 +1083,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "9462cbb7283b21e1af9187e4e6366710ef6d8ff2f4946ddaf7fca3ffc11e41e9"
+content-hash = "758ff72aeef9a662b9bd504fea6d74d2b7faf45fd9a31105b6eee9e2dab3bff5"

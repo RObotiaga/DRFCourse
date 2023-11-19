@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.user_id
+        return str(self.user_id)
 
     class Meta:
         verbose_name = 'пользователь'

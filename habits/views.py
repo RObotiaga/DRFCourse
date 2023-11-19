@@ -12,8 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from .permissions import IsOwner, IsManager
 from .pagination import HabitPagination
-
-bot = telebot.TeleBot(config('TELEBOT_API'))
+from .services import create_periodic_task
 
 
 class HabitViewSet(viewsets.ModelViewSet):
@@ -22,7 +21,9 @@ class HabitViewSet(viewsets.ModelViewSet):
     queryset = Habit.objects.filter(public='public')
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        habit = serializer.save(creator=self.request.user)
+        if habit.pleasantness == 'unpleasant':
+            create_periodic_task(habit)
 
     def get_permissions(self):
         if self.action == 'update' or self.action == 'partial_update':

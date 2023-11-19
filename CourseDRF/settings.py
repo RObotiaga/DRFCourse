@@ -44,17 +44,13 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
     'django_celery_beat',
+
     'users',
     'habits',
 ]
 ################################################################
 # Настройки для Celery
-CELERY_BEAT_SCHEDULE = {
-    'task-name': {
-        'task': 'courses.tasks.check_user_activity',  # Путь к задаче
-        'schedule': timedelta(hours=4),  # Расписание выполнения задачи (например, каждые 10 минут)
-    },
-}
+
 # URL-адрес брокера сообщений
 CELERY_BROKER_URL = 'redis://localhost:6379'  # Например, Redis, который по умолчанию работает на порту 6379
 
