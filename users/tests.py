@@ -1,6 +1,6 @@
-from rest_framework.test import APITestCase, APIClient
-from django.urls import reverse
 from rest_framework import status
+from rest_framework.test import APITestCase, APIClient
+
 from .models import CustomUser
 
 
@@ -11,7 +11,6 @@ class UserAPITestCase(APITestCase):
         self.user1 = CustomUser.objects.create(user_id=1, password='testpassword')
         self.user2 = CustomUser.objects.create(user_id=2, password='testpassword')
         self.client.force_authenticate(user=self.user1)
-
 
     def test_retrieve_user_authenticated(self):
         # Тест получения информации о текущем пользователе (авторизованный)

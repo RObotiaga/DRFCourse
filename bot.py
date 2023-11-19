@@ -50,7 +50,7 @@ def handle_start(message):
 
             main_process(message)
         else:
-            bot.send_message(message.chat.id, f"Произошла ошибка, повторите позднее")
+            bot.send_message(message.chat.id, "Произошла ошибка, повторите позднее")
     except Exception as e:
         bot.send_message(message.chat.id, "Привет, придумай пароль и отправь его мне чтобы зарегистрироваться!")
         bot.register_next_step_handler(message, process_password_step)
@@ -69,7 +69,7 @@ def process_password_step(message):
         user_habit = types.KeyboardButton("Мои привычки")
         create_habit = types.KeyboardButton("Создать привычку")
         markup.add(user_habit, create_habit)
-        bot.send_message(message.chat.id, f"Вы зарегистрированы", reply_markup=markup)
+        bot.send_message(message.chat.id, "Вы зарегистрированы", reply_markup=markup)
         response = requests.post(f'{api_url}/token/', data=user_data)
         save_refresh_token(message.chat.id, response.json()['refresh'])
         main_process(message)
@@ -79,7 +79,7 @@ def process_password_step(message):
         main_process(message)
     else:
         print(response.json()['user_id'])
-        bot.send_message(message.chat.id, f"Произошла ошибка, повторите позднее")
+        bot.send_message(message.chat.id, "Произошла ошибка, повторите позднее")
 
 
 def get_user_habit(user_id):
@@ -107,7 +107,7 @@ def main_process(message):
             habits_keyboard.row(action, time)
     else:
         no_habits = types.InlineKeyboardButton(text='Нет созданных привычек',
-                                               callback_data=f"not clickable")
+                                               callback_data="not clickable")
         habits_keyboard.add(no_habits)
     bot.send_message(message.chat.id, "Мои привычки:", reply_markup=habits_keyboard, )
 
@@ -135,7 +135,7 @@ def cal(c):
                               c.message.message_id,
                               reply_markup=key)
     elif result:
-        bot.edit_message_text(f"Введите время формата HH:MM",
+        bot.edit_message_text("Введите время формата HH:MM",
                               c.message.chat.id,
                               c.message.message_id)
         bot.register_next_step_handler(c.message, lambda msg: save_user_time_input(msg, 'Время', c, result))
@@ -181,7 +181,7 @@ def func(message):
         user_habit = types.KeyboardButton("Мои привычки")
         create_habit = types.KeyboardButton("Создать привычку")
         markup.add(user_habit, create_habit)
-        bot.send_message(message.chat.id, f"Вы зарегистрированы", reply_markup=markup)
+        bot.send_message(message.chat.id, "Вы зарегистрированы", reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -191,7 +191,7 @@ def callback_inline(call):
         bot.answer_callback_query(callback_query_id=call.id, text=f"Введите значение для поля {field.capitalize()}:")
         bot.register_next_step_handler(call.message, lambda msg: save_user_text_input(msg, field, call))
     elif call.data in ['Периодичность', 'Время выполнения']:
-        bot.answer_callback_query(callback_query_id=call.id, text=f"Введите значение для поля HH:MM:SS")
+        bot.answer_callback_query(callback_query_id=call.id, text="Введите значение для поля HH:MM:SS")
         bot.register_next_step_handler(call.message, lambda msg: save_user_duration_input(msg, field, call))
     elif call.data == 'Публичность':
         keyboard2 = types.InlineKeyboardMarkup(row_width=2)
@@ -235,7 +235,7 @@ def callback_inline(call):
         habit_id = call.data.split()[1]
         habit_type_call = f'{call.data.split()[2]} {call.data.split()[3]}'
         user_input[habit_type_call] = habit_id
-        bot.answer_callback_query(callback_query_id=call.id, text=f"Значение поля сохранено")
+        bot.answer_callback_query(callback_query_id=call.id, text="Значение поля сохранено")
         create_habit_edit_menu(call.message)
     elif call.data == 'Время':
         calendar, step = DetailedTelegramCalendar().build()

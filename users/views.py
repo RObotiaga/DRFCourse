@@ -4,11 +4,9 @@ from .permissions import IsCurrentUser
 from .serializers import UserSerializer, UserSerializerForOthers, UserRegisterSerializer
 import logging
 
-# ...
-
 logger = logging.getLogger(__name__)
 
-################################ API
+
 class UserRetrieveAPIView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
 
@@ -28,4 +26,3 @@ class UserUpdateAPIView(generics.UpdateAPIView):
 class UserCreateAPIView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserRegisterSerializer
-

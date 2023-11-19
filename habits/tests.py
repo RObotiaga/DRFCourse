@@ -15,7 +15,7 @@ class HabitAPITestCase(APITestCase):
         self.user = CustomUser.objects.create(user_id=1, password='testpassword')
         self.client.force_authenticate(user=self.user)
 
-    def create_habit(self, data):
+    def create_habit(self):
         # Вспомогательный метод для создания привычки
         url = '/habits/'
         data = {
@@ -38,7 +38,8 @@ class HabitAPITestCase(APITestCase):
 
     def test_update_habit(self):
         # Тест обновления привычки
-        habit = Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant', creator=self.user)
+        habit = Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+                                     creator=self.user)
         data = {'pleasantness': 'unpleasant'}
         url = f'/habits/{habit.id}/'
         response = self.client.patch(url, data, format='json')
@@ -47,7 +48,8 @@ class HabitAPITestCase(APITestCase):
 
     def test_delete_habit(self):
         # Тест удаления привычки
-        habit = Habit.objects.create(time='2023-11-19T20:11:00',public='public', pleasantness='pleasant', creator=self.user)
+        habit = Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+                                     creator=self.user)
         url = f'/habits/{habit.id}/'
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -55,17 +57,16 @@ class HabitAPITestCase(APITestCase):
 
     def test_list_user_habits(self):
         # Тест получения списка привычек пользователя
-        habit1 = Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
-                                      creator=self.user)
-        habit2 = Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
-                                      creator=self.user)
-        habit3 = Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
-                                      creator=self.user)
-        habit4 = Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
-                                      creator=self.user)
+        Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+                             creator=self.user)
+        Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+                             creator=self.user)
+        Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+                             creator=self.user)
+        Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+                             creator=self.user)
         url = '/user/habits/'
         response = self.client.get(url)
         print(response.data['count'])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 4)
-

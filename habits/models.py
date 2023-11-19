@@ -10,9 +10,9 @@ NULLABLE = {'blank': True, 'null': True}
 
 class Habit(models.Model):
     creator = models.ForeignKey(CustomUser, verbose_name='создатель', on_delete=models.DO_NOTHING, blank=True)
-    place = models.CharField(max_length=30, verbose_name='место') ###
-    time = models.DateTimeField(verbose_name='время') ###
-    action = models.CharField(max_length=255, verbose_name='действие') ###
+    place = models.CharField(max_length=30, verbose_name='место')
+    time = models.DateTimeField(verbose_name='время')
+    action = models.CharField(max_length=255, verbose_name='действие')
     pleasant_habit = models.ForeignKey('self', verbose_name='полезная привычка', on_delete=models.DO_NOTHING,
                                        related_name='pleasant_habits',
                                        **NULLABLE)
@@ -25,7 +25,8 @@ class Habit(models.Model):
     pleasantness = models.CharField(choices=[('pleasant', 'Приятная привычка'), ('unpleasant', 'Привычка')],
                                     default='unpleasant',
                                     verbose_name='приятность')
-    public = models.CharField(choices=[('public', 'Опубликовать'), ('not public', 'Не публиковать')], default='not public',
+    public = models.CharField(choices=[('public', 'Опубликовать'), ('not public', 'Не публиковать')],
+                              default='not public',
                               verbose_name='публичность')
 
     def __str__(self):
