@@ -12,7 +12,8 @@ class HabitAPITestCase(APITestCase):
     def setUp(self):
         # Создание пользователей для тестов
         self.client = APIClient()
-        self.user = CustomUser.objects.create(user_id=1, password='testpassword')
+        self.user = CustomUser.objects.create(user_id=1,
+                                              password='testpassword')
         self.client.force_authenticate(user=self.user)
 
     def create_habit(self):
@@ -30,7 +31,8 @@ class HabitAPITestCase(APITestCase):
 
     def test_create_habit(self):
         # Тест создания привычки
-        data = {'public': 'public', 'pleasantness': 'pleasant', 'duration': '00:02:00', 'frequency': '00:01:00'}
+        data = {'public': 'public', 'pleasantness': 'pleasant',
+                'duration': '00:02:00', 'frequency': '00:01:00'}
         response = self.create_habit(data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Habit.objects.count(), 1)
@@ -38,7 +40,9 @@ class HabitAPITestCase(APITestCase):
 
     def test_update_habit(self):
         # Тест обновления привычки
-        habit = Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+        habit = Habit.objects.create(time='2023-11-19T20:11:00',
+                                     public='public',
+                                     pleasantness='pleasant',
                                      creator=self.user)
         data = {'pleasantness': 'unpleasant'}
         url = f'/habits/{habit.id}/'
@@ -48,7 +52,9 @@ class HabitAPITestCase(APITestCase):
 
     def test_delete_habit(self):
         # Тест удаления привычки
-        habit = Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+        habit = Habit.objects.create(time='2023-11-19T20:11:00',
+                                     public='public',
+                                     pleasantness='pleasant',
                                      creator=self.user)
         url = f'/habits/{habit.id}/'
         response = self.client.delete(url)
@@ -57,13 +63,21 @@ class HabitAPITestCase(APITestCase):
 
     def test_list_user_habits(self):
         # Тест получения списка привычек пользователя
-        Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+        Habit.objects.create(time='2023-11-19T20:11:00',
+                             public='public',
+                             pleasantness='pleasant',
                              creator=self.user)
-        Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+        Habit.objects.create(time='2023-11-19T20:11:00',
+                             public='public',
+                             pleasantness='pleasant',
                              creator=self.user)
-        Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+        Habit.objects.create(time='2023-11-19T20:11:00',
+                             public='public',
+                             pleasantness='pleasant',
                              creator=self.user)
-        Habit.objects.create(time='2023-11-19T20:11:00', public='public', pleasantness='pleasant',
+        Habit.objects.create(time='2023-11-19T20:11:00',
+                             public='public',
+                             pleasantness='pleasant',
                              creator=self.user)
         url = '/user/habits/'
         response = self.client.get(url)

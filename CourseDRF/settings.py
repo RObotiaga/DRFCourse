@@ -21,7 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#0rcj9dn$v0p&v9y=a$0fwyj=(75_rl0)@p1besm)oz5(=0hn@'
+SECRET_KEY =\
+    'django-insecure-#0rcj9dn$v0p&v9y=a$0fwyj=(75_rl0)@p1besm)oz5(=0hn@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
@@ -83,14 +84,16 @@ CACHES = {
     }
 }
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(config('ACCESS_TOKEN_LIFETIME', default=15))),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(config('REFRESH_TOKEN_LIFETIME', default=1))),
+    'ACCESS_TOKEN_LIFETIME':
+        timedelta(minutes=int(config('ACCESS_TOKEN_LIFETIME', default=15))),
+    'REFRESH_TOKEN_LIFETIME':
+        timedelta(days=int(config('REFRESH_TOKEN_LIFETIME', default=1))),
 }
 CORS_ALLOWED_ORIGINS = [
     'https://*',  # Замените на адрес вашего фронтенд-сервера
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://read-and-write.example.com",  # Замените на адрес вашего фронтенд-сервера
+    "https://read-and-write.example.com",
     # и добавьте адрес бэкенд-сервера
 ]
 
@@ -158,16 +161,21 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 

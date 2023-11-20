@@ -1,7 +1,8 @@
 from rest_framework import generics
 from .models import CustomUser
 from .permissions import IsCurrentUser
-from .serializers import UserSerializer, UserSerializerForOthers, UserRegisterSerializer
+from .serializers \
+    import UserSerializer, UserSerializerForOthers, UserRegisterSerializer
 import logging
 
 logger = logging.getLogger(__name__)

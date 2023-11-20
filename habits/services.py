@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from django.utils import timezone
-from habits.models import Habit  # Замените "habits" на имя вашего приложения
+from habits.models import Habit
+
 
 def create_periodic_task(obj: Habit) -> None:
     schedule, created = IntervalSchedule.objects.get_or_create(
@@ -13,7 +14,9 @@ def create_periodic_task(obj: Habit) -> None:
     if current_time < obj.time.time():
         start_time = datetime.combine(timezone.now().date(), obj.time.time())
     else:
-        start_time = datetime.combine((timezone.now() + timedelta(days=1)).date(), obj.time.time())
+        start_time = datetime.combine((timezone.now() +
+                                       timedelta(days=1)).date(),
+                                      obj.time.time())
 
     PeriodicTask.objects.create(
         interval=schedule,

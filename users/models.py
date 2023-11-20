@@ -7,7 +7,8 @@ NULLABLE = {'null': True, 'blank': True}
 class CustomUser(AbstractUser):
     username = None
 
-    user_id = models.BigIntegerField(verbose_name='ид пользователя', unique=True)
+    user_id = models.BigIntegerField(verbose_name='ид пользователя',
+                                     unique=True)
 
     USERNAME_FIELD = 'user_id'
     REQUIRED_FIELDS = []

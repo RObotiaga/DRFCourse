@@ -20,11 +20,13 @@ class HabitSerializer(serializers.ModelSerializer):
 
         if treasure and pleasant_habit:
             raise serializers.ValidationError(
-                'Выберите либо Вознаграждение либо Полезную привычку, не оба одновременно.')
+                'Выберите либо Вознаграждение либо Полезную привычку,'
+                ' не оба одновременно.')
 
         if (treasure or related_habit) and pleasantness:
             raise serializers.ValidationError(
-                'У приятной привычки не может быть вознаграждения или связанной привычки')
+                'У приятной привычки не может быть вознаграждения'
+                ' или связанной привычки')
 
         if related_habit and related_habit.pleasantness != 'pleasant':
             raise serializers.ValidationError(

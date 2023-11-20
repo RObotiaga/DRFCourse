@@ -8,8 +8,10 @@ class UserAPITestCase(APITestCase):
     def setUp(self):
         # Создание пользователей для тестов
         self.client = APIClient()
-        self.user1 = CustomUser.objects.create(user_id=1, password='testpassword')
-        self.user2 = CustomUser.objects.create(user_id=2, password='testpassword')
+        self.user1 = CustomUser.objects.create(user_id=1,
+                                               password='testpassword')
+        self.user2 = CustomUser.objects.create(user_id=2,
+                                               password='testpassword')
         self.client.force_authenticate(user=self.user1)
 
     def test_retrieve_user_authenticated(self):

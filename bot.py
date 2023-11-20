@@ -45,14 +45,18 @@ def save_refresh_token(user_id, token):
 def handle_start(message):
     try:
         refresh = get_refresh_token(message.chat.id)
-        response = requests.post(f'{api_url}/token/refresh/', data={'refresh': refresh})
+        response = requests.post(f'{api_url}/token/refresh/',
+                                 data={'refresh': refresh})
         if response.status_code == 200:
 
             main_process(message)
         else:
-            bot.send_message(message.chat.id, "Произошла ошибка, повторите позднее")
+            bot.send_message(message.chat.id,
+                             "Произошла ошибка, повторите позднее")
     except Exception as e:
-        bot.send_message(message.chat.id, "Привет, придумай пароль и отправь его мне чтобы зарегистрироваться!")
+        bot.send_message(message.chat.id,
+                         "Привет, придумай пароль и "
+                         "отправь его мне чтобы зарегистрироваться!")
         bot.register_next_step_handler(message, process_password_step)
         print(e)
 
@@ -69,26 +73,31 @@ def process_password_step(message):
         user_habit = types.KeyboardButton("Мои привычки")
         create_habit = types.KeyboardButton("Создать привычку")
         markup.add(user_habit, create_habit)
-        bot.send_message(message.chat.id, "Вы зарегистрированы", reply_markup=markup)
+        bot.send_message(message.chat.id, "Вы зарегистрированы",
+                         reply_markup=markup)
         response = requests.post(f'{api_url}/token/', data=user_data)
         save_refresh_token(message.chat.id, response.json()['refresh'])
         main_process(message)
-    elif response.json()['user_id'] == ['пользователь с таким ид пользователя уже существует.']:
+    elif response.json()['user_id'] == \
+            ['пользователь с таким ид пользователя уже существует.']:
         response = requests.post(f'{api_url}/token/', data=user_data)
         save_refresh_token(message.chat.id, response.json()['refresh'])
         main_process(message)
     else:
         print(response.json()['user_id'])
-        bot.send_message(message.chat.id, "Произошла ошибка, повторите позднее")
+        bot.send_message(message.chat.id,
+                         "Произошла ошибка, повторите позднее")
 
 
 def get_user_habit(user_id):
     refresh = get_refresh_token(user_id)
-    refresh_response = requests.post(f'{api_url}/token/refresh/', data={'refresh': refresh})
+    refresh_response = requests.post(f'{api_url}/token/refresh/',
+                                     data={'refresh': refresh})
     headers = {
         "Authorization": f"Bearer {refresh_response.json()['access']}",
     }
-    access_response = requests.get(f'{api_url}/user/habits/', headers=headers)
+    access_response = requests.get(f'{api_url}/user/habits/',
+                                   headers=headers)
     return access_response.json()
 
 
@@ -98,31 +107,45 @@ def main_process(message):
     if habits:
         for habit in habits:
             time_str = habit['time']
-            action = types.InlineKeyboardButton(text=habit['action'].capitalize(),
-                                                callback_data=f"habit {habit['id']}")
-            time_obj = datetime.fromisoformat(time_str[:-6]) - timedelta(hours=int(time_str[-6:][:3]),
-                                                                         minutes=int(time_str[-6:][4:]))
+            action = types.InlineKeyboardButton(text=habit['action']
+                                                .capitalize(),
+                                                callback_data=f"habit "
+                                                              f"{habit['id']}")
+            time_obj = datetime.fromisoformat(time_str[:-6]) - timedelta(
+                hours=int(time_str[-6:][:3]),
+                minutes=int(time_str[-6:][4:])
+            )
+
             normal_time = time_obj.strftime('%Y-%m-%d %H:%M:%S')
-            time = types.InlineKeyboardButton(text=normal_time, callback_data=f"habit {habit['id']}")
+            time = types.InlineKeyboardButton(text=normal_time,
+                                              callback_data=f"habit "
+                                                            f"{habit['id']}")
             habits_keyboard.row(action, time)
     else:
         no_habits = types.InlineKeyboardButton(text='Нет созданных привычек',
                                                callback_data="not clickable")
         habits_keyboard.add(no_habits)
-    bot.send_message(message.chat.id, "Мои привычки:", reply_markup=habits_keyboard, )
+    bot.send_message(message.chat.id, "Мои привычки:",
+                     reply_markup=habits_keyboard, )
 
 
 def create_habit_edit_menu(message):
     keyboard = types.InlineKeyboardMarkup(row_width=2)
-    fields = ["Время", "Место", "Действие", "Приятная привычка", "Связанная привычка", "Периодичность",
-              "Вознаграждение", "Время выполнения", "Публичность", "Приятность"]
+    fields = ["Время", "Место", "Действие", "Приятная привычка",
+              "Связанная привычка", "Периодичность",
+              "Вознаграждение", "Время выполнения",
+              "Публичность", "Приятность"]
     for field in fields:
-        name = types.InlineKeyboardButton(text=field.capitalize(), callback_data=field)
-        value = types.InlineKeyboardButton(text=user_input.get(field, ''), callback_data=field)
+        name = types.InlineKeyboardButton(text=field.capitalize(),
+                                          callback_data=field)
+        value = types.InlineKeyboardButton(text=user_input.get(field, ''),
+                                           callback_data=field)
         keyboard.row(name, value)
-    save = types.InlineKeyboardButton(text='Сохранить', callback_data='save_habit')
+    save = types.InlineKeyboardButton(text='Сохранить',
+                                      callback_data='save_habit')
     keyboard.row(save)
-    bot.edit_message_reply_markup(chat_id=message.chat.id, message_id=message.message_id,
+    bot.edit_message_reply_markup(chat_id=message.chat.id,
+                                  message_id=message.message_id,
                                   reply_markup=keyboard)
 
 
@@ -138,7 +161,10 @@ def cal(c):
         bot.edit_message_text("Введите время формата HH:MM",
                               c.message.chat.id,
                               c.message.message_id)
-        bot.register_next_step_handler(c.message, lambda msg: save_user_time_input(msg, 'Время', c, result))
+        bot.register_next_step_handler(c.message,
+                                       lambda msg:
+                                       save_user_time_input(
+                                           msg, 'Время', c, result))
 
 
 @bot.message_handler(content_types=['text'])
@@ -153,53 +179,78 @@ def func(message):
 
         for habit in habits:
             time_str = habit['time']
-            action = types.InlineKeyboardButton(text=habit['action'].capitalize(),
-                                                callback_data=f"habit {habit['id']}")
-            time_obj = datetime.fromisoformat(time_str[:-6]) - timedelta(hours=int(time_str[-6:][:3]),
-                                                                         minutes=int(time_str[-6:][4:]))
+            action = types.InlineKeyboardButton(text=habit['action']
+                                                .capitalize(),
+                                                callback_data=f"habit "
+                                                              f"{habit['id']}")
+            time_obj = datetime.fromisoformat(time_str[:-6]) - timedelta(
+                hours=int(time_str[-6:][:3]),
+                minutes=int(time_str[-6:][4:])
+            )
+
             normal_time = time_obj.strftime('%Y-%m-%d %H:%M:%S')
-            time = types.InlineKeyboardButton(text=normal_time, callback_data='not clickable')
+            time = types.InlineKeyboardButton(text=normal_time,
+                                              callback_data='not clickable')
             habits_keyboard.row(action, time)
-        bot.send_message(message.chat.id, "Выберите поле для ввода:", reply_markup=habits_keyboard)
+        bot.send_message(message.chat.id, "Выберите поле для ввода:",
+                         reply_markup=habits_keyboard)
     elif message.text == 'Создать привычку':
         habits = get_user_habit(message.chat.id)['results']
         for i in habits:
             habits_id.append(i['id'])
         keyboard = types.InlineKeyboardMarkup(row_width=2)
-        fields = ["Время", "Место", "Действие", "Приятная привычка", "Связанная привычка", "Периодичность",
-                  "Вознаграждение", "Время выполнения", "Публичность", "Приятность"]
+        fields = ["Время", "Место", "Действие", "Приятная привычка",
+                  "Связанная привычка", "Периодичность",
+                  "Вознаграждение", "Время выполнения",
+                  "Публичность", "Приятность"]
         for field in fields:
-            name = types.InlineKeyboardButton(text=field.capitalize(), callback_data=field)
-            value = types.InlineKeyboardButton(text=user_input.get(field, ''), callback_data=field)
+            name = types.InlineKeyboardButton(text=field.capitalize(),
+                                              callback_data=field)
+            value = types.InlineKeyboardButton(text=user_input.get(field, ''),
+                                               callback_data=field)
             keyboard.row(name, value)
-        save = types.InlineKeyboardButton(text='Сохранить', callback_data='save_habit')
+        save = types.InlineKeyboardButton(text='Сохранить',
+                                          callback_data='save_habit')
         keyboard.row(save)
 
-        bot.send_message(message.chat.id, "Выберите поле для ввода:", reply_markup=keyboard)
+        bot.send_message(message.chat.id, "Выберите поле для ввода:",
+                         reply_markup=keyboard)
     else:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         user_habit = types.KeyboardButton("Мои привычки")
         create_habit = types.KeyboardButton("Создать привычку")
         markup.add(user_habit, create_habit)
-        bot.send_message(message.chat.id, "Вы зарегистрированы", reply_markup=markup)
+        bot.send_message(message.chat.id, "Вы зарегистрированы",
+                         reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     field = call.data
     if call.data in ['Место', 'Действие', 'Вознаграждение']:
-        bot.answer_callback_query(callback_query_id=call.id, text=f"Введите значение для поля {field.capitalize()}:")
-        bot.register_next_step_handler(call.message, lambda msg: save_user_text_input(msg, field, call))
+        bot.answer_callback_query(callback_query_id=call.id,
+                                  text=f"Введите значение для поля "
+                                       f"{field.capitalize()}:")
+        bot.register_next_step_handler(call.message,
+                                       lambda msg:
+                                       save_user_text_input(
+                                           msg, field, call))
     elif call.data in ['Периодичность', 'Время выполнения']:
-        bot.answer_callback_query(callback_query_id=call.id, text="Введите значение для поля HH:MM:SS")
-        bot.register_next_step_handler(call.message, lambda msg: save_user_duration_input(msg, field, call))
+        bot.answer_callback_query(callback_query_id=call.id,
+                                  text="Введите значение для поля HH:MM:SS")
+        bot.register_next_step_handler(call.message,
+                                       lambda msg:
+                                       save_user_duration_input(
+                                           msg, field, call))
     elif call.data == 'Публичность':
         keyboard2 = types.InlineKeyboardMarkup(row_width=2)
         fields = ["Публичная", "Непубличная"]
         for inline_field in fields:
-            button = types.InlineKeyboardButton(text=inline_field.capitalize(), callback_data=inline_field)
+            button = types.InlineKeyboardButton(text=inline_field.capitalize(),
+                                                callback_data=inline_field)
             keyboard2.add(button)
-        bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id,
+        bot.edit_message_reply_markup(chat_id=call.message.chat.id,
+                                      message_id=call.message.message_id,
                                       reply_markup=keyboard2)
     elif call.data in ['Публичная', 'Непубличная']:
         user_input['Публичность'] = call.data
@@ -208,9 +259,11 @@ def callback_inline(call):
         keyboard2 = types.InlineKeyboardMarkup(row_width=2)
         fields = ["Приятная", "Обычная"]
         for inline_field in fields:
-            button = types.InlineKeyboardButton(text=inline_field.capitalize(), callback_data=inline_field)
+            button = types.InlineKeyboardButton(text=inline_field.capitalize(),
+                                                callback_data=inline_field)
             keyboard2.add(button)
-        bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id,
+        bot.edit_message_reply_markup(chat_id=call.message.chat.id,
+                                      message_id=call.message.message_id,
                                       reply_markup=keyboard2)
     elif call.data in ['Приятная', 'Обычная']:
         user_input['Приятность'] = call.data
@@ -222,36 +275,57 @@ def callback_inline(call):
 
         for habit in habits:
             time_str = habit['time']
-            action = types.InlineKeyboardButton(text=habit['action'].capitalize(),
-                                                callback_data=f"choose {habit['id']} {call.data}")
-            time_obj = datetime.fromisoformat(time_str[:-6]) - timedelta(hours=int(time_str[-6:][:3]),
-                                                                         minutes=int(time_str[-6:][4:]))
+            action = types.InlineKeyboardButton(
+                text=habit['action'].capitalize(),
+                callback_data=f"choose {habit['id']} {call.data}"
+            )
+            time_obj = datetime.fromisoformat(time_str[:-6]) - timedelta(
+                hours=int(time_str[-6:][:3]),
+                minutes=int(time_str[-6:][4:])
+            )
+
             normal_time = time_obj.strftime('%Y-%m-%d %H:%M:%S')
-            time = types.InlineKeyboardButton(text=normal_time, callback_data='not clickable')
+            time = types.InlineKeyboardButton(
+                text=normal_time,
+                callback_data='not clickable'
+            )
             habits_keyboard.row(action, time)
-        bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                                      reply_markup=habits_keyboard)
+
+        bot.edit_message_reply_markup(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=habits_keyboard
+        )
+
     elif 'choose' in call.data:
         habit_id = call.data.split()[1]
         habit_type_call = f'{call.data.split()[2]} {call.data.split()[3]}'
         user_input[habit_type_call] = habit_id
-        bot.answer_callback_query(callback_query_id=call.id, text="Значение поля сохранено")
+        bot.answer_callback_query(callback_query_id=call.id,
+                                  text="Значение поля сохранено")
         create_habit_edit_menu(call.message)
     elif call.data == 'Время':
         calendar, step = DetailedTelegramCalendar().build()
-        bot.edit_message_text(f"Select {LSTEP[step]}", chat_id=call.message.chat.id, message_id=call.message.message_id,
+        bot.edit_message_text(f"Select {LSTEP[step]}",
+                              chat_id=call.message.chat.id,
+                              message_id=call.message.message_id,
                               reply_markup=calendar)
     elif call.data == 'save_habit':
-        if not user_input.get('Время', ) or not user_input.get('Место', ) or not user_input.get('Действие', ):
+        if not user_input.get('Время', ) \
+                or not user_input.get('Место', ) \
+                or not user_input.get('Действие', ):
             bot.send_message(call.message.chat.id, 'Есть незаполненные поля')
             return
         refresh = get_refresh_token(call.message.chat.id)
-        refresh_response = requests.post(f'{api_url}/token/refresh/', data={'refresh': refresh})
+        refresh_response = requests.post(f'{api_url}/token/refresh/',
+                                         data={'refresh': refresh})
         headers = {
             "Authorization": f"Bearer {refresh_response.json()['access']}",
         }
         user_data = {
-            'time': datetime.strptime(user_input.get('Время', ), "%H:%M %Y-%m-%d").strftime("%Y-%m-%dT%H:%M"),
+            'time': datetime.strptime(user_input.get('Время', ),
+                                      "%H:%M %Y-%m-%d")
+            .strftime("%Y-%m-%dT%H:%M"),
             'place': user_input.get('Место', ),
             'action': user_input.get('Действие', ),
             'treasure': user_input.get('Вознаграждение', ),
@@ -262,7 +336,9 @@ def callback_inline(call):
             'pleasantness': user_input.get('Приятность', ),
             'related_habit': user_input.get('Связанная привычка', ),
         }
-        response = requests.post(f'{api_url}/habits/', data=user_data, headers=headers)
+        response = requests.post(f'{api_url}/habits/',
+                                 data=user_data,
+                                 headers=headers)
         if response.status_code == 201:
             bot.send_message(call.message.chat.id, 'Привычка создана')
         print(json.loads(response.content.decode('utf-8')))
@@ -276,13 +352,21 @@ def save_user_text_input(message, field, call):
 def save_user_duration_input(message, field, call):
     try:
         if field in ['Время выполнения', 'Периодичность']:
-            delta_format = "%H:%M:%S" if field == 'Время выполнения' else "%d %H:%M:%S"
+            delta_format = "%H:%M:%S" \
+                if field == 'Время выполнения' \
+                else "%d %H:%M:%S"
             time = datetime.strptime(message.text, delta_format)
 
-            if (field == 'Время выполнения' and time.minute > 2) or (field == 'Периодичность' and time.day > 7):
-                error_message = 'Длительность не может быть больше 2 минут' if field == 'Время выполнения' else 'Периодичность не может быть больше 7 дней'
+            if (field == 'Время выполнения' and time.minute > 2) \
+                    or (field == 'Периодичность' and time.day > 7):
+                error_message = 'Длительность не может быть больше 2 минут' \
+                    if field == 'Время выполнения' \
+                    else 'Периодичность не может быть больше 7 дней'
                 bot.send_message(message.chat.id, error_message)
-                bot.register_next_step_handler(call.message, lambda msg: save_user_duration_input(msg, field, call))
+                bot.register_next_step_handler(call.message,
+                                               lambda msg:
+                                               save_user_duration_input(
+                                                   msg, field, call))
                 return
             else:
                 user_input[field] = message.text
@@ -290,19 +374,28 @@ def save_user_duration_input(message, field, call):
 
     except Exception as e:
         print(e)
-        bot.send_message(message.chat.id, 'Неверный формат времени, попробуйте еще раз')
-        bot.register_next_step_handler(call.message, lambda msg: save_user_duration_input(msg, field, call))
+        bot.send_message(message.chat.id,
+                         'Неверный формат времени, попробуйте еще раз')
+        bot.register_next_step_handler(call.message,
+                                       lambda msg:
+                                       save_user_duration_input(
+                                           msg, field, call))
 
 
 def save_user_time_input(message, field, call, date):
     try:
-        datetime.strptime(f'{message.text} {date}', "%H:%M %Y-%m-%d").strftime("%Y-%m-%dT%H:%M")
+        datetime.strptime(f'{message.text} {date}',
+                          "%H:%M %Y-%m-%d").strftime("%Y-%m-%dT%H:%M")
         user_input[field] = f'{message.text} {date}'
         create_habit_edit_menu(call.message)
     except Exception as e:
         print(e)
-        bot.send_message(message.chat.id, 'Неверный формат времени, попробуйте еще раз')
-        bot.register_next_step_handler(message, lambda msg: save_user_time_input(msg, field, call, date))
+        bot.send_message(message.chat.id,
+                         'Неверный формат времени, попробуйте еще раз')
+        bot.register_next_step_handler(message,
+                                       lambda msg:
+                                       save_user_time_input(
+                                           msg, field, call, date))
         return
 
 
