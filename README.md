@@ -16,8 +16,10 @@
 ### Запустите сервер 
 `python manage.py runserver`
 ### Запустите celery
-`celery -A CourseDRF worker -l INFO -P eventlet -S django
-celery -A CourseDRF beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler`
+```
+celery -A CourseDRF worker -l INFO -P eventlet -S django
+celery -A CourseDRF beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+```
 ### Если нужно запустите бота
 `python bot.py`
 # Настройка
