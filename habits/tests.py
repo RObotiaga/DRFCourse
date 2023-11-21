@@ -1,9 +1,15 @@
-from rest_framework.test import APITestCase, APIClient
-from rest_framework import status
+import unittest
+from datetime import datetime
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from rest_framework import status
+from rest_framework.test import APITestCase, APIClient
 
 from users.models import CustomUser
 from .models import Habit
+from .tasks import enable_notifications
 
 User = get_user_model()
 
@@ -31,9 +37,7 @@ class HabitAPITestCase(APITestCase):
 
     def test_create_habit(self):
         # Тест создания привычки
-        data = {'public': 'public', 'pleasantness': 'pleasant',
-                'duration': '00:02:00', 'frequency': '00:01:00'}
-        response = self.create_habit(data)
+        response = self.create_habit()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Habit.objects.count(), 1)
         self.assertEqual(Habit.objects.get().place, 'петрова')
@@ -81,6 +85,36 @@ class HabitAPITestCase(APITestCase):
                              creator=self.user)
         url = '/user/habits/'
         response = self.client.get(url)
-        print(response.data['count'])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 4)
+
+
+class TestEnableNotifications(APITestCase):
+    def setUp(self):
+        user = self.user = CustomUser.objects.create(user_id=5855516946,
+                                                     password='testpassword')
+        self.client.force_authenticate(user=self.user)
+        self.habit = Habit.objects.create(
+            place='Москва',
+            action='Погулять',
+            time=datetime(2023, 11, 19, 15, 11, tzinfo=timezone.utc),
+            creator=user,
+        )
+
+    @patch('habits.tasks.bot.send_message')
+    def test_enable_notifications_sends_message(self, mock_send_message):
+        enable_notifications(self.habit.pk)
+        habit_message = f'Пора выполнить привычку: {self.habit}\n' \
+                        f'Время на выполнение ' \
+                        f'{self.habit.duration.total_seconds()} секунд'
+        mock_send_message.assert_called_once_with(
+            self.habit.creator.user_id, habit_message)
+
+    @patch('habits.tasks.print')
+    def test_enable_notifications_prints_message_sent(self, mock_print):
+        enable_notifications(self.habit.pk)
+        mock_print.assert_called_once_with('message sent')
+
+
+if __name__ == '__main__':
+    unittest.main()

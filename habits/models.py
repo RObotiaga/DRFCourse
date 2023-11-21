@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from django.db import models
 from users.models import CustomUser
-
+from dateutil.parser import parse
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -10,7 +10,7 @@ NULLABLE = {'blank': True, 'null': True}
 
 class Habit(models.Model):
     creator = models.ForeignKey(CustomUser, verbose_name='создатель',
-                                on_delete=models.DO_NOTHING, blank=True)
+                                on_delete=models.CASCADE, blank=True)
     place = models.CharField(max_length=30, verbose_name='место')
     time = models.DateTimeField(verbose_name='время')
     action = models.CharField(max_length=255, verbose_name='действие')
@@ -41,7 +41,8 @@ class Habit(models.Model):
 
     def __str__(self):
         return f'{self.action} в ' \
-               f'{self.time.strftime("%Y-%m-%d %H:%M")} в {self.place}'
+               f'{parse(str(self.time)).strftime("%Y-%m-%d %H:%M")}' \
+               f' в {self.place}'
 
     class Meta:
         verbose_name = 'привычка'
