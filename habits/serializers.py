@@ -4,6 +4,19 @@ from .validators import max_duration, max_frequency
 
 
 class HabitSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор для модели привычек.
+
+    Attributes:
+    - `read_only_fields`: Поля, которые только для чтения .
+    - `duration`: Поле для длительности привычки с валидатором `max_duration`.
+    - `frequency`: Поле для частоты привычки с валидатором `max_frequency`.
+
+    Methods:
+    - `validate(data)`: Проверка дополнительных правил валидации
+    данных перед сохранением.
+
+    """
     read_only_fields = ('creator',)
     duration = serializers.DurationField(validators=[max_duration])
     frequency = serializers.DurationField(validators=[max_frequency])
@@ -13,6 +26,19 @@ class HabitSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, data):
+        """
+        Проверка дополнительных правил валидации данных перед сохранением.
+
+        Parameters:
+        - `data`: Данные, полученные от клиента.
+
+        Raises:
+        - `ValidationError`: Исключение, если данные не проходят валидацию.
+
+        Returns:
+        - `data`: Валидные данные.
+
+        """
         treasure = data.get('treasure')
         pleasant_habit = data.get('pleasant_habit')
         pleasantness = data.get('pleasantness')

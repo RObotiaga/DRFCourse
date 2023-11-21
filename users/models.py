@@ -5,8 +5,13 @@ NULLABLE = {'null': True, 'blank': True}
 
 
 class CustomUser(AbstractUser):
-    username = None
+    """
+    Модель пользователя.
 
+    Attributes:
+    - `user_id`: ИД пользователя в телеграм.
+    """
+    username = None
     user_id = models.BigIntegerField(verbose_name='ид пользователя',
                                      unique=True)
 

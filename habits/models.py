@@ -9,6 +9,22 @@ NULLABLE = {'blank': True, 'null': True}
 # Create your models here.
 
 class Habit(models.Model):
+    """
+    Модель для представления привычек.
+
+    Attributes:
+    - `creator`: Пользователь, создавший привычку.
+    - `place`: Место, где осуществляется привычка.
+    - `time`: Время выполнения привычки.
+    - `action`: Описание действия, связанного с привычкой.
+    - `pleasant_habit`: Связанная полезная привычка (может быть null).
+    - `related_habit`: Связанная привычка (может быть null).
+    - `frequency`: Периодичность выполнения привычки.
+    - `treasure`: Вознаграждение за выполнение привычки (может быть null).
+    - `duration`: Длительность выполнения привычки (по умолчанию, 1 минута).
+    - `pleasantness`: Уровень приятности привычки.
+    - `public`: Статус публичности привычки ('public' или 'not public').
+    """
     creator = models.ForeignKey(CustomUser, verbose_name='создатель',
                                 on_delete=models.CASCADE, blank=True)
     place = models.CharField(max_length=30, verbose_name='место')
