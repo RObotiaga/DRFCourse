@@ -6,7 +6,6 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from habits.permissions import IsOwner
 from .models import CustomUser
 from .permissions import IsCurrentUser
 from .serializers \
@@ -17,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class UserRetrieveAPIView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.request.user.pk == self.kwargs.get("pk"):
