@@ -32,6 +32,7 @@ class HabitViewSet(viewsets.ModelViewSet):
 class UsersHabitListAPIView(generics.ListAPIView):
     serializer_class = HabitSerializer
     pagination_class = HabitPagination
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
