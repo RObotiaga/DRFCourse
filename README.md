@@ -20,8 +20,6 @@
 celery -A CourseDRF worker -l INFO -P eventlet -S django
 celery -A CourseDRF beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
 ```
-### Если нужно запустите бота
-`python bot.py`
 # Настройка
 Для работы сервиса необходимо настроить некоторые параметры, такие как база данных и настройки email-отправки. Вам потребуются следующие параметры, которые вы можете установить в файле .env:
 ```
@@ -41,6 +39,28 @@ REDIS_HOST=redis://127.0.0.1:6379
 TELEBOT_API=
 ```
 Независимо от способа создания привычки пользователем, для получения напоминаний от бота необходимо написать любое сообщение.
-Если запущен бот из файла bot.py появляется просматривать и создавать привычки прямо в боте.
 После создания пользователем полезной привычки будет создана периодическая задача, результатом выполнения которой будет 
 отправка сообщения в телеграм в заданное пользователем время с заданной периодичностью
+
+# Docker
+Создайте файл .env и установите необходимые переменные окружения:
+```
+DEBUG=True
+
+DB_NAME=
+DB_USER=postgres
+DB_PASSWORD=
+DB_HOST=db
+DB_PORT=5432
+
+ACCESS_TOKEN_LIFETIME=1500
+REFRESH_TOKEN_LIFETIME=15
+
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+REDIS_HOST=redis://127.0.0.1:6379
+
+TELEBOT_API=
+```
+Запустите проект с помощью Docker Compose:
+`docker-compose up -d`

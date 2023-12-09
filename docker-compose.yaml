@@ -54,11 +54,5 @@ services:
     depends_on:
       - redis
       - app
-#  telebot:
-#    build: .
-#    tty: true
-#    command: python bot.py
-#    depends_on:
-#      - app
 volumes:
   pg_data:
