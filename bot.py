@@ -8,7 +8,7 @@ import json
 from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 
 bot = telebot.TeleBot(config('TELEBOT_API'))
-api_url = 'http://localhost:8000'
+api_url = 'http://0.0.0.0:8000'
 user_input = {
     'Время выполнения': '00:02:00',
     'Периодичность': '00:20:00'
